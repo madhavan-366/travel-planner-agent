@@ -1,0 +1,34 @@
+.layout {
+    min-height: 100vh;
+    background: #0f172a;
+    color: white;
+    font-family: system-ui, sans-serif;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+}
+.logo {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+.logoutBtn {
+    background: transparent;
+    border: 1px solid #475569;
+    color: #cbd5e1;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.logoutBtn:hover {
+    background: #334155;
+    color: white;
+}
+.content {
+    padding: 2rem 1rem;
+}

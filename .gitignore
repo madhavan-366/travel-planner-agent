@@ -1,0 +1,32 @@
+# Dependency directories
+**/node_modules/
+
+# Virtual Environments
+agent/.venv/
+.venv/
+env/
+ENV/
+
+# Local databases & vectors
+**/chroma_db/
+
+# Hidden credentials, keys, and environment overrides
+**/.env
+**/.env.local
+**/.env.production
+**/.env.development
+
+# Build and production outputs
+**/dist/
+**/build/
+**/out/
+
+# Python caching systems
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Operating system files
+.DS_Store
+Thumbs.db

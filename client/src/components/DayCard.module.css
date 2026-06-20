@@ -1,0 +1,84 @@
+.cardContainer {
+    background: #1e293b;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    padding: 24px;
+    max-width: 720px;
+    margin: 0 auto 2rem auto;
+    position: relative;
+    animation: slideUp 400ms ease-out forwards;
+}
+.dayHeader {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #3b82f6;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 0.5rem;
+}
+.section {
+    margin-bottom: 1.25rem;
+}
+.sectionTitle {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.itemDetail {
+    display: flex;
+    justify-content: space-between;
+    background: #0f172a;
+    padding: 0.75rem;
+    border-radius: 6px;
+}
+.costBadge {
+    color: #10b981;
+    font-weight: 600;
+}
+.activityItem {
+    background: #0f172a;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: center;
+}
+.timeLine {
+    display: flex;
+    flex-direction: column;
+}
+.time {
+    font-family: monospace;
+    font-weight: 600;
+}
+.typeTag {
+    font-size: 0.65rem;
+    background: #334155;
+    padding: 2px 4px;
+    border-radius: 4px;
+    text-align: center;
+    margin-top: 2px;
+    color: #cbd5e1;
+}
+.actName {
+    color: #f1f5f9;
+}
+.actCost {
+    color: #10b981;
+    font-weight: 600;
+}
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

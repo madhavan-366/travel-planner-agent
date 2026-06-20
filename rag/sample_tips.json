@@ -1,0 +1,12 @@
+[
+  {"page_content": "Visit the Omoide Yokocho alley in Shinjuku for authentic, affordable yakitori.", "metadata": {"destination": "Tokyo", "category": "local_food", "budget_tier": "budget"}},
+  {"page_content": "The Tokyo Metropolitan Government Building offers a free panoramic view of the city.", "metadata": {"destination": "Tokyo", "category": "hidden_gem", "budget_tier": "free"}},
+  {"page_content": "Le Comptoir de La Gastronomie in Paris serves incredible foie gras at reasonable prices.", "metadata": {"destination": "Paris", "category": "local_food", "budget_tier": "mid"}},
+  {"page_content": "Walk through the Promenade Plantée, an elevated park built on an old railway viaduct.", "metadata": {"destination": "Paris", "category": "hidden_gem", "budget_tier": "free"}},
+  {"page_content": "Rent a scooter in Bali for under $5 a day to explore hidden beaches like Nyang Nyang.", "metadata": {"destination": "Bali", "category": "transport_tip", "budget_tier": "budget"}},
+  {"page_content": "Eat at the local 'Warungs' in Bali for authentic meals under $3.", "metadata": {"destination": "Bali", "category": "local_food", "budget_tier": "budget"}},
+  {"page_content": "Take the Batobus on the Seine in Paris for a cheap alternative to tourist cruises.", "metadata": {"destination": "Paris", "category": "transport_tip", "budget_tier": "budget"}},
+  {"page_content": "Meiji Jingu Shrine is free to enter and offers a peaceful forest walk in the heart of Tokyo.", "metadata": {"destination": "Tokyo", "category": "hidden_gem", "budget_tier": "free"}},
+  {"page_content": "Tegalalang Rice Terrace is best visited at sunrise to avoid crowds and entry fees.", "metadata": {"destination": "Bali", "category": "seasonal", "budget_tier": "free"}},
+  {"page_content": "Visit the Louvre on the first Sunday of the month for free entry (seasonal).", "metadata": {"destination": "Paris", "category": "seasonal", "budget_tier": "free"}}
+]

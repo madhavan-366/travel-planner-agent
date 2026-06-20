@@ -1,0 +1,55 @@
+.wrapper {
+    padding: 2rem 1rem;
+}
+.timelineContainer {
+    max-width: 760px;
+    margin: 2rem auto;
+    border-left: 2px solid #334155;
+    padding-left: 1.5rem;
+}
+.timelineNode {
+    position: relative;
+}
+.timelineNode::before {
+    content: '';
+    position: absolute;
+    left: calc(-1.5rem - 7px);
+    top: 28px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #3b82f6;
+    border: 2px solid #0f172a;
+    z-index: 2;
+}
+.errorBanner {
+    max-width: 720px;
+    margin: 1rem auto;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+.skeletonCard {
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 24px;
+    border-radius: 12px;
+    max-width: 720px;
+    margin: 0 auto;
+    opacity: 0.6;
+}
+.skeletonLine {
+    height: 20px;
+    background: #334155;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+.skeletonLineShort {
+    height: 16px;
+    background: #334155;
+    width: 60%;
+    border-radius: 4px;
+}
