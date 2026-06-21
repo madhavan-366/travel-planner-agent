@@ -8,7 +8,13 @@ import planRoutes from './routes/plan.js';
 dotenv.config();
 
 const app = express();
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({
+  origin: [
+    'http://localhost:5173', 
+    'https://travel-planner-agent-seven.vercel.app' 
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
