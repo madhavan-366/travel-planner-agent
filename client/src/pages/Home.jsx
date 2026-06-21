@@ -246,11 +246,12 @@ export default function Home() {
     setSavedPlan(false);
     const token = localStorage.getItem('token');
     if (!token) { navigate('/login'); return; }
+    const base = import.meta.env.VITE_API_URL || '';
     const travel_dates = formData.departure_date && formData.return_date
       ? `${formData.departure_date} to ${formData.return_date}`
       : formData.departure_date || 'Flexible';
     try {
-      const res = await fetch('/api/plan', {
+      const res = await fetch(`${base}/api/plan`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ ...formData, budget_usd: formData.budget_inr, travel_dates })
@@ -279,9 +280,10 @@ export default function Home() {
   // ── SWAP ACTIVITY ────────────────────────────────────────────────────────
   const handleSwap = async (time, currentActivity, swapKey) => {
     const token = localStorage.getItem('token');
+    const base = import.meta.env.VITE_API_URL || '';
     setSwappingKey(swapKey);
     try {
-      const res = await fetch('/api/swap', {
+      const res = await fetch(`${base}/api/swap`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({
