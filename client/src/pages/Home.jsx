@@ -313,9 +313,14 @@ export default function Home() {
       ? `${formData.departure_date} to ${formData.return_date}`
       : formData.departure_date || 'Flexible';
     try {
-      const res = await fetch('/api/save-plan', {
+      // 🛠️ FIX: Prepend the live backend URL environment variable prefix!
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const res = await fetch(`${baseUrl}/api/save-plan`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${token}` 
+        },
         body: JSON.stringify({
           fromLocation: formData.from_location,
           destination: formData.destination,
@@ -326,10 +331,17 @@ export default function Home() {
         })
       });
       const data = await res.json();
-      if (data.success) setSavedPlan(true);
-    } catch (err) { console.error('Save failed:', err); }
+      if (data.success || res.ok) {
+        setSavedPlan(true);
+        alert("Plan saved successfully to your cloud database! 🎉");
+      } else {
+        alert("Failed to save plan: " + (data.message || "Unknown error"));
+      }
+    } catch (err) { 
+      console.error('Save failed:', err); 
+      alert("Error contacting server while saving plan.");
+    }
   };
-
   // ── PDF EXPORT ────────────────────────────────────────────────────────────
   const exportPDF = () => {
     // Strip chars outside latin-1 range that jsPDF helvetica can't render
