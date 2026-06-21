@@ -34,7 +34,9 @@ export default function Profile() {
     setConfirmDelete(null);
     const token = localStorage.getItem('token');
     try {
-      await fetch(`/api/my-plans/${planId}`, {
+      // 🛠️ FIX 1: Prepend the backend base URL prefix
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      await fetch(`${baseUrl}/api/my-plans/${planId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -47,7 +49,10 @@ export default function Profile() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) { navigate('/login'); return; }
-    fetch('/api/my-plans', { headers: { 'Authorization': `Bearer ${token}` } })
+    
+    // 🛠️ FIX 2: Prepend the backend base URL prefix
+    const baseUrl = import.meta.env.VITE_API_URL || '';
+    fetch(`${baseUrl}/api/my-plans`, { headers: { 'Authorization': `Bearer ${token}` } })
       .then(r => r.json())
       .then(data => { setPlans(Array.isArray(data) ? data : []); setLoading(false); })
       .catch(() => setLoading(false));
