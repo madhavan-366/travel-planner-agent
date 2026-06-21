@@ -28,7 +28,13 @@ export default function Login() {
     e.preventDefault();
     setErr('');
     setLoading(true);
-    const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
+    
+    // 🛠️ FIX: Combine the backend base URL environment variable with your path endpoint!
+    const baseUrl = import.meta.env.VITE_API_URL || '';
+    const endpoint = isRegister 
+      ? `${baseUrl}/api/auth/register` 
+      : `${baseUrl}/api/auth/login`;
+      
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
