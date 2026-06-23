@@ -15,14 +15,41 @@ const DAY_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4
 const TRANSIT_HOURS = { Flight: 3, Train: 28, Bus: 20, Car: 16 };
 
 // Country keyword lists to detect international travel
-const INDIA_CITIES = ['mumbai','delhi','bangalore','bengaluru','chennai','kolkata','hyderabad','pune','ahmedabad','jaipur','surat','lucknow','kanpur','nagpur','visakhapatnam','indore','thane','bhopal','patna','vadodara','goa','kochi','coimbatore','ooty','mysore','agra','varanasi','amritsar','chandigarh','bhubaneswar','guwahati','ranchi','raipur','dehradun','shimla','manali','rishikesh','haridwar','leh','ladakh','darjeeling','siliguri','jammu','srinagar','india'];
+// Indian states, UTs and popular destinations to detect domestic travel
+const INDIA_KEYWORDS = [
+  // States & UTs
+  'andhra pradesh','arunachal pradesh','assam','bihar','chhattisgarh','goa','gujarat','haryana','himachal pradesh',
+  'jharkhand','karnataka','kerala','madhya pradesh','maharashtra','manipur','meghalaya','mizoram','nagaland',
+  'odisha','punjab','rajasthan','sikkim','tamil nadu','telangana','tripura','uttar pradesh','uttarakhand',
+  'west bengal','andaman','nicobar','chandigarh','dadra','nagar haveli','daman','diu','delhi','jammu','kashmir',
+  'ladakh','lakshadweep','puducherry','j&k',
+  // Cities / towns
+  'mumbai','delhi','bangalore','bengaluru','chennai','kolkata','hyderabad','pune','ahmedabad','jaipur','surat',
+  'lucknow','kanpur','nagpur','visakhapatnam','indore','thane','bhopal','patna','vadodara','kochi','coimbatore',
+  'ooty','mysore','agra','varanasi','amritsar','bhubaneswar','guwahati','ranchi','raipur','dehradun','shimla',
+  'manali','rishikesh','haridwar','leh','ladakh','darjeeling','siliguri','srinagar','jammu','goa','udaipur',
+  'jodhpur','pushkar','jaisalmer','mount abu','alappuzha','munnar','thekkady','wayanad','varkala','trivandrum',
+  'vellore','madurai','tirupati','vijayawada','visakhapatnam','rajahmundry','guntur','nellore','warangal',
+  'noida','ghaziabad','faridabad','ludhiana','jalandhar','ambala','kurukshetra','panipat','sonipat','rohtak',
+  'bikaner','ajmer','kota','bundi','chittorgarh','ranthambore','bundi','chandigarh','mohali','panchkula',
+  'shillong','gangtok','kalimpong','imphal','agartala','aizawl','kohima','itanagar','dispur',
+  'rourkela','cuttack','puri','bhubaneswar','sambalpur','berhampur','balasore','jeypore',
+  'durgapur','asansol','siliguri','kharagpur','haldia','howrah','durgapur','maldah',
+  'dhanbad','bokaro','jamshedpur','hazaribagh','gaya','muzaffarpur','bhagalpur','purnea',
+  'gwalior','ujjain','indore','bhopal','jabalpur','satna','rewa','sagar','ratlam',
+  'nashik','aurangabad','nagpur','solapur','kolhapur','sangli','satara','ratnagiri',
+  'kerala','kerela','kerela','kottayam','idukki','ernakulam','thrissur','malappuram','kannur','kasargod','palakkad','pathanamthitta','alappuzha','kollam',
+  'himachal','himachal pradesh','dharamshala','kangra','bilaspur','chamba','hamirpur','kinnaur','kullu','lahaul','spiti','mandi','shimla','sirmaur','solan','una',
+  'rajasthan','rajasthan','alwar','banswara','baran','barmer','bharatpur','bhilwara','bikaner','bundi','chittorgarh','churu','dausa','dholpur','dungarpur','hanumangarh','jaipur','jaisalmer','jalore','jhalawar','jhunjhunu','karauli','kota','nagaur','pali','pratapgarh','rajsamand','sawai madhopur','sikar','sirohi','sriganganagar','tonk','udaipur',
+  'india'
+];
 
 function isInternationalJourney(from, to) {
   if (!from || !to) return false;
   const f = from.toLowerCase().trim();
   const t = to.toLowerCase().trim();
-  const fromIndia = INDIA_CITIES.some(c => f.includes(c));
-  const toIndia = INDIA_CITIES.some(c => t.includes(c));
+  const fromIndia = INDIA_KEYWORDS.some(c => f.includes(c));
+  const toIndia = INDIA_KEYWORDS.some(c => t.includes(c));
   // If one end is India and the other is not, it's international
   if (fromIndia && !toIndia) return true;
   if (!fromIndia && toIndia) return true;
@@ -179,11 +206,15 @@ export default function Home() {
     const tripDays = Math.round((new Date(return_date) - new Date(departure_date)) / 86400000);
     if (tripDays <= 0) return null;
     const usableDays = tripDays - totalTransitDays;
-    // No warning for Flight or international (flight is same-day travel)
-    if (travel_mode === 'Flight' || isInternationalJourney(formData.from_location, formData.destination)) return null;
-    // Suggest new return date
-    const suggestedReturn = new Date(new Date(departure_date).getTime() + (tripDays + totalTransitDays) * 86400000);
-    const suggestedStr = suggestedReturn.toISOString().split('T')[0];
+    if (travel_mode === 'Flight') return null;
+    const toCheck = [from_loc, destination].filter(Boolean).map(s => s.toLowerCase().trim());
+    const isIndianAnywhere = (s) => INDIA_KEYWORDS.some(k => s.includes(k));
+    if (toCheck.length >= 2 && isIndianAnywhere(toCheck[0]) && isIndianAnywhere(toCheck[1])) return null;
+    if (toCheck.length === 1 && isIndianAnywhere(toCheck[0])) return null;
+    // Suggest return date that gives at least 1 usable day (avoids timezone bug)
+    const [dy, dm, dd] = departure_date.split('-').map(Number);
+    const suggestedDate = new Date(dy, dm - 1, dd + totalTransitDays + 1);
+    const suggestedStr = `${suggestedDate.getFullYear()}-${String(suggestedDate.getMonth() + 1).padStart(2, '0')}-${String(suggestedDate.getDate()).padStart(2, '0')}`;
     return {
       transitDays: totalTransitDays,
       usableDays: Math.max(0, usableDays),
@@ -246,6 +277,11 @@ export default function Home() {
     setSavedPlan(false);
     const token = localStorage.getItem('token');
     if (!token) { navigate('/login'); return; }
+    if (formData.travel_mode !== 'Train') {
+      alert('Only Train mode is currently supported for plan generation. Please select Train to generate your itinerary.');
+      setLoading(false);
+      return;
+    }
     const base = import.meta.env.VITE_API_URL || '';
     const travel_dates = formData.departure_date && formData.return_date
       ? `${formData.departure_date} to ${formData.return_date}`

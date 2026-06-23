@@ -1,5 +1,4 @@
 import express from 'express';
-import fetch from 'node-fetch';
 import { authenticateToken } from '../middleware/auth.js';
 import Trip from '../models/Trip.js';
 
@@ -62,8 +61,17 @@ router.post('/swap', authenticateToken, async (req, res) => {
 
 // Core Planning Router Engine
 router.post('/plan', authenticateToken, async (req, res) => {
-    // Destructure from_location out of incoming client body
     const { from_location, destination, budget_usd, duration_days, travel_dates, travel_mode } = req.body;
+
+    if (travel_mode !== 'Train') {
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+        res.flushHeaders();
+        res.write(`data: ${JSON.stringify({ error: 'Only Train mode is currently supported for plan generation.' })}\n\n`);
+        res.end();
+        return;
+    }
 
     try {
         // Log trip data into MongoDB database
@@ -107,7 +115,11 @@ router.post('/plan', authenticateToken, async (req, res) => {
         res.flushHeaders();
 
         // Forward request parameters directly to FastAPI Agent
-        const response = await fetch(`${process.env.AGENT_SERVICE_URL}/plan`, {
+        const agentUrl = process.env.AGENT_SERVICE_URL;
+        if (!agentUrl) {
+            throw new Error('AGENT_SERVICE_URL is not configured on the server.');
+        }
+        const response = await fetch(`${agentUrl}/plan`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
