@@ -69,13 +69,36 @@ router.post('/plan', authenticateToken, async (req, res) => {
         // Log trip data into MongoDB database
         const trip = await Trip.create({
             userId: req.user.id,
-            fromLocation: from_location, // Save starting point
+            fromLocation: from_location,
             destination,
             budgetUsd: budget_usd,
             durationDays: duration_days,
             travelDates: travel_dates,
             status: 'planning'
         });
+
+        // Geocode origin and destination via OpenStreetMap Nominatim
+        let originLatLon = null;
+        let destLatLon = null;
+        try {
+            const geoPromises = [
+                fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(from_location)}&format=json&limit=1`, {
+                    headers: { 'User-Agent': 'AgenticTravelPlanner/1.0 (contact@example.com)' }
+                }).then(r => r.json()),
+                fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(destination)}&format=json&limit=1`, {
+                    headers: { 'User-Agent': 'AgenticTravelPlanner/1.0 (contact@example.com)' }
+                }).then(r => r.json())
+            ];
+            const [geoFrom, geoTo] = await Promise.all(geoPromises);
+            if (geoFrom && geoFrom.length > 0) {
+                originLatLon = { lat: parseFloat(geoFrom[0].lat), lon: parseFloat(geoFrom[0].lon), display_name: geoFrom[0].display_name };
+            }
+            if (geoTo && geoTo.length > 0) {
+                destLatLon = { lat: parseFloat(geoTo[0].lat), lon: parseFloat(geoTo[0].lon), display_name: geoTo[0].display_name };
+            }
+        } catch (geoErr) {
+            console.error("Geocoding skipped due to error:", geoErr.message);
+        }
 
         // Setup Server-Sent Events headers for live stream visualization
         res.setHeader('Content-Type', 'text/event-stream');
@@ -90,6 +113,8 @@ router.post('/plan', authenticateToken, async (req, res) => {
             body: JSON.stringify({
                 from_location,
                 destination,
+                origin_latlon: originLatLon,
+                destination_latlon: destLatLon,
                 budget_usd: Number(budget_usd),
                 duration_days: Number(duration_days),
                 travel_dates: travel_dates || "Flexible",

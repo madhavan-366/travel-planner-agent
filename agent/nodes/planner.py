@@ -12,6 +12,15 @@ def planner_node(state: TravelState):
     duration = state.get("duration_days", 3)
     dates = state.get("travel_dates", "Flexible")
     travel_mode = state.get("travel_mode", "Flight")
+    origin_latlon = state.get("origin_latlon")
+    destination_latlon = state.get("destination_latlon")
+    
+    origin_coord_str = ""
+    dest_coord_str = ""
+    if origin_latlon:
+        origin_coord_str = f" [coordinates: {origin_latlon['lat']}, {origin_latlon['lon']}]"
+    if destination_latlon:
+        dest_coord_str = f" [coordinates: {destination_latlon['lat']}, {destination_latlon['lon']}]"
     
     # 1. Calculate Currency Conversions dynamically
     target_curr = detect_currency_by_destination(to_loc)
@@ -44,7 +53,7 @@ def planner_node(state: TravelState):
         "- Include train/flight/bus name and per-person ticket price on Day 1 departure entry\n"
         f"- TRAVEL MODE: {travel_mode}. If train or bus, Day 1 is TRAVEL DAY — board at departure city, arrive at destination. Show exact train/bus name, departure time, arrival time, ticket cost.\n"
         f"- If travel takes overnight (e.g. overnight train), Day 2 morning starts at destination.\n"
-        f"- From: {from_loc} → To: {to_loc}, Duration: {duration} days, Dates: {dates}\n"
+        f"- From: {from_loc}{origin_coord_str} → To: {to_loc}{dest_coord_str}, Duration: {duration} days, Dates: {dates}\n"
         f"- Budget: ₹{budget_inr:,} INR (≈ {converted_budget:,.0f} {target_curr})\n"
         "- All costs in INR with ₹ symbol"
     )
